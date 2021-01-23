@@ -129,7 +129,9 @@ def main(
     files_changed = 0
     files_unchanged = 0
     for notebook_fname in files_to_format:
-        cells_errored, cells_changed, cells_unchanged = format_file(notebook_fname, mode)
+        cells_errored, cells_changed, cells_unchanged = format_file(
+            notebook_fname, mode
+        )
 
         if cells_errored > 0:
             files_errored += 1
