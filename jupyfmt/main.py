@@ -33,20 +33,18 @@ def format_file(notebook_path: PathLike, mode: black.FileMode):
             print(f'Error "{str(e)}" while formatting code with black.')
 
         if orig_source != fmted_source:
-            print(f'--- Cell {i} ---')
+            header = f'{notebook_path} - Cell {i} '
 
             # diff = difflib.ndiff(orig_source.splitlines(keepends=True), fmted_source.splitlines(keepends=True))
             diff = difflib.unified_diff(
                 orig_source.splitlines(keepends=True),
                 fmted_source.splitlines(keepends=True),
-                fromfile='original',
-                tofile='new',
+                fromfile=header,
+                tofile=header,
             )
 
             diff_str = ''.join(diff)
-
             print(diff_str)
-            print('')
 
             cells_changed += 1
 
