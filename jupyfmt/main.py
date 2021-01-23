@@ -61,6 +61,14 @@ def format_file(notebook_path: PathLike, mode: black.FileMode):
         else:
             cells_unchanged += 1
 
+    if cells_errored > 0:
+        print(f'{cells_errored} cell(s) raised parsing errors 🤕')
+    if cells_changed > 0:
+        print(f'{cells_changed} cell(s) would be changed 😬')
+    if cells_unchanged > 0:
+        print(f'{cells_unchanged} cell(s) would be left unchanged 🎉')
+    print()
+
     return cells_errored, cells_changed, cells_unchanged
 
 
