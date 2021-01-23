@@ -41,12 +41,12 @@ def invalid_notebook(tmp_path):
 def test_valid_notebooks(valid_notebook):
     runner = CliRunner()
 
-    result = runner.invoke(jupyfmt.main, [valid_notebook])
+    result = runner.invoke(jupyfmt.main, [str(valid_notebook)])
     assert result.exit_code == 0
 
 
 def test_invalid_notebooks(invalid_notebook):
     runner = CliRunner()
 
-    result = runner.invoke(jupyfmt.main, [invalid_notebook])
+    result = runner.invoke(jupyfmt.main, [str(invalid_notebook)])
     assert result.exit_code == 1
