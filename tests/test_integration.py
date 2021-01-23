@@ -11,9 +11,7 @@ def valid_notebook(tmp_path):
     nb = nbf.v4.new_notebook()
 
     code = '1 + 1'
-    nb['cells'] = [
-        nbf.v4.new_code_cell(code)
-    ]
+    nb['cells'] = [nbf.v4.new_code_cell(code)]
 
     fname = tmp_path / 'notebook.ipynb'
     with open(fname, 'w') as fd:
@@ -27,9 +25,7 @@ def invalid_notebook(tmp_path):
     nb = nbf.v4.new_notebook()
 
     code = '1+1'
-    nb['cells'] = [
-        nbf.v4.new_code_cell(code)
-    ]
+    nb['cells'] = [nbf.v4.new_code_cell(code)]
 
     fname = tmp_path / 'notebook.ipynb'
     with open(fname, 'w') as fd:
