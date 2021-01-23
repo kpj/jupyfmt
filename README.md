@@ -20,4 +20,19 @@ $ pip install jupyfmt
 
 ```bash
 $ jupyfmt Notebook.ipynb
+--- Cell 1 ---
+--- original
++++ new
+@@ -1,2 +1,2 @@
+-def foo (*args):
++def foo(*args):
+     return sum(args)
+
+
+--- Cell 2 ---
+--- original
++++ new
+@@ -1 +1 @@
+-foo(1, 2,3)
++foo(1, 2, 3)
 ```
