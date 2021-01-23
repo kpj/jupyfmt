@@ -33,4 +33,9 @@ $ jupyfmt Notebook.ipynb
 @@ -1 +1 @@
 -foo(1, 2,3)
 +foo(1, 2, 3)
+
+2 cell(s) would be changed 😬
+1 cell(s) would be left unchanged 🎉
+
+1 file(s) would be changed 😬
 ```
