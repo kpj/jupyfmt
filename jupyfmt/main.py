@@ -35,7 +35,7 @@ def format_file(notebook_path: PathLike, mode: black.FileMode):
         if orig_source != fmted_source:
             print(f'--- Cell {i} ---')
 
-            # diff = difflib.ndiff(orig_source.split('\n'), fmted_source.split('\n'))
+            # diff = difflib.ndiff(orig_source.splitlines(keepends=True), fmted_source.splitlines(keepends=True))
             diff = difflib.unified_diff(
                 orig_source.splitlines(keepends=True),
                 fmted_source.splitlines(keepends=True),
