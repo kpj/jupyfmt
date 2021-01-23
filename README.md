@@ -7,6 +7,7 @@ Format code in Jupyter notebooks.
 
 [jupyter-black](https://github.com/drillan/jupyter-black) and [nb_black](https://github.com/dnanhkhoa/nb_black) are fabulous Jupyter extensions for formatting your code in the editor.
 `jupyfmt` allows you to assert properly formatted Jupyter notebook cells in your CI.
+Inspired by [snakefmt](https://github.com/snakemake/snakefmt/).
 
 
 ## Installation
