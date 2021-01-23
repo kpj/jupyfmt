@@ -1,3 +1,4 @@
+import re
 import difflib
 from pathlib import Path
 
@@ -29,6 +30,10 @@ def format_file(notebook_path: PathLike, mode: black.FileMode):
         # for notebook cells, this does not make sense
         orig_source += '\n'
 
+        # Jupyter cell magic can mess up black
+        # TODO: this is a bad hack
+        orig_source = re.sub('^%', '#%#jupylint#', orig_source, flags=re.M)
+
         try:
             fmted_source = black.format_str(orig_source, mode=mode)
         except black.InvalidInput as e:
@@ -37,6 +42,8 @@ def format_file(notebook_path: PathLike, mode: black.FileMode):
             continue
 
         if orig_source != fmted_source:
+            fmted_source = re.sub('^#%#jupylint#', '%', fmted_source, flags=re.M)
+
             header = f'{notebook_path} - Cell {i} '
 
             # diff = difflib.ndiff(orig_source.splitlines(keepends=True), fmted_source.splitlines(keepends=True))

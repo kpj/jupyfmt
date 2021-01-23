@@ -10,8 +10,11 @@ import jupyfmt
 def valid_notebook(tmp_path):
     nb = nbf.v4.new_notebook()
 
-    code = '1 + 1'
-    nb['cells'] = [nbf.v4.new_code_cell(code)]
+    nb['cells'] = [
+        nbf.v4.new_code_cell('1 + 1'),
+        nbf.v4.new_code_cell('%time 1 + 1'),
+        nbf.v4.new_code_cell('%%time\n1 + 1'),
+    ]
 
     fname = tmp_path / 'notebook.ipynb'
     with open(fname, 'w') as fd:
