@@ -13,7 +13,13 @@ import click
 PathLike = Union[Path, str]
 
 
-def format_file(notebook_path: PathLike, mode: black.FileMode):
+def format_file(
+    notebook_path: PathLike,
+    mode: black.FileMode,
+    check: bool,
+    diff: bool,
+    compact_diff: bool,
+):
     with open(notebook_path) as fd:
         nb = nbf.read(fd, as_version=4)
 
@@ -46,28 +52,45 @@ def format_file(notebook_path: PathLike, mode: black.FileMode):
 
             header = f'{notebook_path} - Cell {i} '
 
-            # diff = difflib.ndiff(orig_source.splitlines(keepends=True), fmted_source.splitlines(keepends=True))
-            diff = difflib.unified_diff(
-                orig_source.splitlines(keepends=True),
-                fmted_source.splitlines(keepends=True),
-                fromfile=header,
-                tofile=header,
-            )
+            if compact_diff:
+                diff_result = difflib.unified_diff(
+                    orig_source.splitlines(keepends=True),
+                    fmted_source.splitlines(keepends=True),
+                    fromfile=header,
+                    tofile=header,
+                )
+            elif diff:
+                diff_result = difflib.ndiff(
+                    orig_source.splitlines(keepends=True),
+                    fmted_source.splitlines(keepends=True),
+                )
 
-            diff_str = ''.join(diff)
-            print(diff_str)
+            if compact_diff or diff:
+                diff_str = ''.join(diff_result)
+                print(diff_str)
+
+            if fmted_source.endswith('\n'):
+                # remove dummy newline we added earlier
+                fmted_source = fmted_source[:-1]
+            fmted_cell = nbf.v4.new_code_cell(fmted_source)
+            nb['cells'][i] = fmted_cell
 
             cells_changed += 1
         else:
             cells_unchanged += 1
 
-    if cells_errored > 0:
-        print(f'{cells_errored} cell(s) raised parsing errors 🤕')
-    if cells_changed > 0:
-        print(f'{cells_changed} cell(s) would be changed 😬')
-    if cells_unchanged > 0:
-        print(f'{cells_unchanged} cell(s) would be left unchanged 🎉')
-    print()
+    if cells_errored == 0 and not check and not compact_diff and not diff:
+        with open(notebook_path, 'w') as fd:
+            nbf.write(nb, fd)
+
+    if check:
+        if cells_errored > 0:
+            print(f'{cells_errored} cell(s) raised parsing errors 🤕')
+        if cells_changed > 0:
+            print(f'{cells_changed} cell(s) would be changed 😬')
+        if cells_unchanged > 0:
+            print(f'{cells_unchanged} cell(s) would be left unchanged 🎉')
+        print()
 
     return cells_errored, cells_changed, cells_unchanged
 
@@ -96,6 +119,24 @@ def get_notebooks_in_dir(path):
     default=False,
     help='Don\'t normalize string quotes or prefixes.',
 )
+@click.option(
+    '--check',
+    is_flag=True,
+    help=('Don\'t write files back, just return status and print summary.'),
+)
+@click.option(
+    '-d',
+    '--diff',
+    is_flag=True,
+    help='Don\'t write files back, just output a diff for each file to stdout.',
+)
+@click.option(
+    '--compact-diff',
+    is_flag=True,
+    help=(
+        'Same as --diff but only show lines that would change plus a few lines of context.'
+    ),
+)
 @click.argument(
     'path_list',
     nargs=-1,
@@ -108,8 +149,13 @@ def main(
     ctx: click.Context,
     line_length: int,
     skip_string_normalization: bool,
+    check: bool,
+    diff: bool,
+    compact_diff: bool,
     path_list: List[PathLike],
 ):
+    """The uncompromising Jupyter notebook formatter."""
+
     # gather files to format
     files_to_format = set()
     for path in path_list:
@@ -130,7 +176,7 @@ def main(
     files_unchanged = 0
     for notebook_fname in files_to_format:
         cells_errored, cells_changed, cells_unchanged = format_file(
-            notebook_fname, mode
+            notebook_fname, mode, check, diff, compact_diff
         )
 
         if cells_errored > 0:
@@ -141,19 +187,22 @@ def main(
             files_unchanged += 1
 
     # report
-    if files_errored > 0:
-        print(f'{files_errored} file(s) raised parsing errors 🤕')
-    if files_changed > 0:
-        print(f'{files_changed} file(s) would be changed 😬')
-    if files_unchanged > 0:
-        print(f'{files_unchanged} file(s) would be left unchanged 🎉')
+    if check:
+        if files_errored > 0:
+            print(f'{files_errored} file(s) raised parsing errors 🤕')
+        if files_changed > 0:
+            print(f'{files_changed} file(s) would be changed 😬')
+        if files_unchanged > 0:
+            print(f'{files_unchanged} file(s) would be left unchanged 🎉')
 
     # return appropriate exit code
     exit_code = 0
-    if files_errored > 0:
-        exit_code = 2
-    elif files_changed > 0:
-        exit_code = 1
+
+    if check:
+        if files_errored > 0:
+            exit_code = 2
+        elif files_changed > 0:
+            exit_code = 1
 
     ctx.exit(exit_code)
 
