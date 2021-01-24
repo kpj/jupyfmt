@@ -40,12 +40,16 @@ def invalid_notebook(tmp_path):
 def test_valid_notebooks(valid_notebook):
     runner = CliRunner()
 
-    result = runner.invoke(jupyfmt.main, [str(valid_notebook)])
+    result = runner.invoke(jupyfmt.main, ['--check', str(valid_notebook)])
     assert result.exit_code == 0
+    assert '3 cell(s) would be left unchanged' in result.output
+    assert '1 file(s) would be left unchanged' in result.output
 
 
 def test_invalid_notebooks(invalid_notebook):
     runner = CliRunner()
 
-    result = runner.invoke(jupyfmt.main, [str(invalid_notebook)])
+    result = runner.invoke(jupyfmt.main, ['--check', str(invalid_notebook)])
     assert result.exit_code == 1
+    assert '1 cell(s) would be changed' in result.output
+    assert '1 file(s) would be changed' in result.output
