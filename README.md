@@ -3,14 +3,16 @@
 [![PyPI](https://img.shields.io/pypi/v/jupyfmt.svg?style=flat)](https://pypi.python.org/pypi/jupyfmt)
 [![Tests](https://github.com/kpj/jupyfmt/workflows/Tests/badge.svg)](https://github.com/kpj/jupyfmt/actions)
 
-Format code in Jupyter notebooks.
+The uncompromising Jupyter notebook formatter.
 
 [jupyter-black](https://github.com/drillan/jupyter-black) and [nb_black](https://github.com/dnanhkhoa/nb_black) are fabulous Jupyter extensions for formatting your code in the editor.
-`jupyfmt` allows you to assert properly formatted Jupyter notebook cells in your CI.
-Inspired by [snakefmt](https://github.com/snakemake/snakefmt/).
+`jupyfmt` allows you to format notebooks in-place as well as assert properly formatted Jupyter notebook cells in your CI.
+Inspired by [snakefmt](https://github.com/snakemake/snakefmt/). Uses [black](https://github.com/psf/black/) under the hood.
 
 
 ## Installation
+
+Install the latest release from PyPI:
 
 ```python
 $ pip install jupyfmt
@@ -19,8 +21,34 @@ $ pip install jupyfmt
 
 ## Usage
 
+`jupyfmt` can be used to format notebooks in-place or report diffs and summary statistics.
+
+Overview of commandline parameters:
 ```bash
-$ jupyfmt Notebook.ipynb
+$ jupyfmt --help
+Usage: jupyfmt [OPTIONS] [PATH_LIST]...
+
+  The uncompromising Jupyter notebook formatter.
+
+Options:
+  -l, --line-length INT           How many characters per line to allow.
+  -S, --skip-string-normalization
+                                  Don't normalize string quotes or prefixes.
+  --check                         Don't write files back, just return status
+                                  and print summary.
+
+  -d, --diff                      Don't write files back, just output a diff
+                                  for each file to stdout.
+
+  --compact-diff                  Same as --diff but only show lines that
+                                  would change plus a few lines of context.
+
+  --help                          Show this message and exit.
+```
+
+Report formatting suggestions for a given notebook (this is particularly useful for CI workflows):
+```bash
+$ jupyfmt --check --compact-diff  Notebook.ipynb
 --- Notebook.ipynb - Cell 1
 +++ Notebook.ipynb - Cell 1
 @@ -1,2 +1,2 @@
