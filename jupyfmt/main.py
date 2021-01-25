@@ -84,6 +84,9 @@ def format_file(
             nbf.write(nb, fd)
 
     if check:
+        if not diff and not compact_diff:
+            print(notebook_path)
+
         if cells_errored > 0:
             print(f'{cells_errored} cell(s) raised parsing errors 🤕')
         if cells_changed > 0:
