@@ -95,10 +95,14 @@ def format_file(
     return cells_errored, cells_changed, cells_unchanged
 
 
-def get_notebooks_in_dir(path):
+def get_notebooks_in_dir(path, exclude_regex):
     for child in path.iterdir():
+        exclude_match = exclude_regex.search(str(child.resolve().as_posix()))
+        if exclude_match and exclude_match.group(0):
+            continue
+
         if child.is_dir():
-            yield from get_notebooks_in_dir(child)
+            yield from get_notebooks_in_dir(child, exclude_regex)
         elif child.is_file() and child.suffix == '.ipynb':
             yield child
 
@@ -137,6 +141,16 @@ def get_notebooks_in_dir(path):
         'Same as --diff but only show lines that would change plus a few lines of context.'
     ),
 )
+@click.option(
+    '--exclude',
+    type=str,
+    metavar='PATTERN',
+    default=r'(.git|.ipynb_checkpoints|build|dist)',
+    help=(
+        'Regular expression to match paths which should be exluded when searching directories.'
+    ),
+    show_default=True,
+)
 @click.argument(
     'path_list',
     nargs=-1,
@@ -152,6 +166,7 @@ def main(
     check: bool,
     diff: bool,
     compact_diff: bool,
+    exclude: str,
     path_list: List[PathLike],
 ):
     """The uncompromising Jupyter notebook formatter.
@@ -160,6 +175,7 @@ def main(
     """
 
     # gather files to format
+    exclude_regex = re.compile(exclude)
     files_to_format = set()
     for path in path_list:
         path = Path(path)
@@ -167,7 +183,7 @@ def main(
         if path.is_file():
             files_to_format.add(path)
         elif path.is_dir():
-            files_to_format.update(get_notebooks_in_dir(path))
+            files_to_format.update(get_notebooks_in_dir(path, exclude_regex))
 
     # format files
     mode = black.FileMode(

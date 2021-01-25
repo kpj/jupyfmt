@@ -46,6 +46,11 @@ Options:
   --compact-diff                  Same as --diff but only show lines that
                                   would change plus a few lines of context.
 
+  --exclude PATTERN               Regular expression to match paths which
+                                  should be exluded when searching
+                                  directories.  [default:
+                                  (.git|.ipynb_checkpoints|build|dist)]
+
   --help                          Show this message and exit.
 ```
 
