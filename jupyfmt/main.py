@@ -154,7 +154,10 @@ def main(
     compact_diff: bool,
     path_list: List[PathLike],
 ):
-    """The uncompromising Jupyter notebook formatter."""
+    """The uncompromising Jupyter notebook formatter.
+
+    PATH_LIST specifies notebooks and directories to search for notebooks in. By default, all notebooks will be formatted in-place. Use `--check`, `--diff` (or `--compact-diff`) to print summary reports instead.
+    """
 
     # gather files to format
     files_to_format = set()

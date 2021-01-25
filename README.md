@@ -29,6 +29,10 @@ Usage: jupyfmt [OPTIONS] [PATH_LIST]...
 
   The uncompromising Jupyter notebook formatter.
 
+  PATH_LIST specifies notebooks and directories to search for notebooks in.
+  By default, all notebooks will be formatted in-place. Use `--check`,
+  `--diff` (or `--compact-diff`) to print summary reports instead.
+
 Options:
   -l, --line-length INT           How many characters per line to allow.
   -S, --skip-string-normalization
