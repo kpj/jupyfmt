@@ -56,7 +56,7 @@ Options:
 
 Report formatting suggestions for a given notebook (this is particularly useful for CI workflows):
 ```bash
-$ jupyfmt --check --compact-diff  Notebook.ipynb
+$ jupyfmt --check --compact-diff Notebook.ipynb
 --- Notebook.ipynb - Cell 1
 +++ Notebook.ipynb - Cell 1
 @@ -1,2 +1,2 @@
