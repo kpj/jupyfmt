@@ -5,8 +5,7 @@
 
 The uncompromising Jupyter notebook formatter.
 
-[jupyter-black](https://github.com/drillan/jupyter-black) and [nb_black](https://github.com/dnanhkhoa/nb_black) are fabulous Jupyter extensions for formatting your code in the editor.
-`jupyfmt` allows you to format notebooks in-place as well as assert properly formatted Jupyter notebook cells in your CI.
+`jupyfmt` allows you to format notebooks in-place from the commandline as well as assert properly formatted Jupyter notebook cells in your CI.
 Inspired by [snakefmt](https://github.com/snakemake/snakefmt/). Uses [black](https://github.com/psf/black/) under the hood.
 
 
