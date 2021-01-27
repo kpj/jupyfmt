@@ -46,6 +46,9 @@ Options:
   --compact-diff                  Same as --diff but only show lines that
                                   would change plus a few lines of context.
 
+  --assert-consistent-execution   Assert that all cells have been executed in
+                                  correct order.
+
   --exclude PATTERN               Regular expression to match paths which
                                   should be exluded when searching
                                   directories.  [default:

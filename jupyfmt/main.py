@@ -19,6 +19,7 @@ def format_file(
     check: bool,
     diff: bool,
     compact_diff: bool,
+    assert_consistent_execution: bool,
 ):
     with open(notebook_path) as fd:
         nb = nbf.read(fd, as_version=4)
@@ -26,10 +27,27 @@ def format_file(
     cells_errored = 0
     cells_changed = 0
     cells_unchanged = 0
+
+    current_execution_count = 1
     for i, cell in enumerate(nb['cells']):
         if cell['cell_type'] != 'code':
             continue
 
+        # check execution consistency
+        if (
+            assert_consistent_execution
+            and cell['execution_count'] != current_execution_count
+        ):
+            if check:
+                cells_errored += 1
+                continue
+            else:
+                raise RuntimeError(
+                    f'[{notebook_path}] Cell {i} has inconsistent execution count'
+                )
+        current_execution_count += 1
+
+        # format code
         orig_source = cell['source']
 
         # black expects empty line at end of file
@@ -44,7 +62,7 @@ def format_file(
             fmted_source = black.format_str(orig_source, mode=mode)
         except black.InvalidInput as e:
             if check:
-                print(f'Error while formatting cell {i}: {e}')
+                print(f'[{notebook_path}] Error while formatting cell {i}: {e}')
                 cells_errored += 1
                 continue
             else:
@@ -148,6 +166,11 @@ def get_notebooks_in_dir(path, exclude_regex):
     ),
 )
 @click.option(
+    '--assert-consistent-execution',
+    is_flag=True,
+    help=('Assert that all cells have been executed in correct order.'),
+)
+@click.option(
     '--exclude',
     type=str,
     metavar='PATTERN',
@@ -172,6 +195,7 @@ def main(
     check: bool,
     diff: bool,
     compact_diff: bool,
+    assert_consistent_execution: bool,
     exclude: str,
     path_list: List[PathLike],
 ):
@@ -202,7 +226,12 @@ def main(
     for notebook_fname in files_to_format:
         try:
             cells_errored, cells_changed, cells_unchanged = format_file(
-                notebook_fname, mode, check, diff, compact_diff
+                notebook_fname,
+                mode,
+                check,
+                diff,
+                compact_diff,
+                assert_consistent_execution,
             )
         except Exception as e:
             if check:
