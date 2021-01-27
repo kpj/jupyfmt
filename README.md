@@ -23,7 +23,7 @@ $ pip install jupyfmt
 `jupyfmt` can be used to format notebooks in-place or report diffs and summary statistics.
 
 Overview of commandline parameters:
-```bash
+```
 $ jupyfmt --help
 Usage: jupyfmt [OPTIONS] [PATH_LIST]...
 
