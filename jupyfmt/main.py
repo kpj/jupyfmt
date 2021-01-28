@@ -71,9 +71,10 @@ def format_file(
         if any(orig_source.startswith(f'%%{magic}') for magic in SKIPPABLE_MAGIC_CODES):
             continue
 
-        # black expects empty line at end of file
+        # black expects empty line at end of non-empty file
         # for notebook cells, this does not make sense
-        orig_source += '\n'
+        if len(orig_source) > 0:
+            orig_source += '\n'
 
         # Jupyter cell magic can mess up black
         # TODO: this is a bad hack
