@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "jupyfmt"
-version = "0.3.0"
+version = "0.3.1"
 description = "Format code in Jupyter notebooks"
 license = "MIT"
 authors = ["kpj <kim.philipp.jablonski@gmail.com>"]
