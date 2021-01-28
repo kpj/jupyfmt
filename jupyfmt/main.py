@@ -78,6 +78,7 @@ def format_file(
         # Jupyter cell magic can mess up black
         # TODO: this is a bad hack
         orig_source = re.sub('^%', '#%#jupylint#', orig_source, flags=re.M)
+        orig_source = re.sub('^!', '#!#jupylint#', orig_source, flags=re.M)
 
         try:
             fmted_source = black.format_str(orig_source, mode=mode)
@@ -93,6 +94,7 @@ def format_file(
 
         if orig_source != fmted_source:
             fmted_source = re.sub('^#%#jupylint#', '%', fmted_source, flags=re.M)
+            fmted_source = re.sub('^#!#jupylint#', '!', fmted_source, flags=re.M)
 
             header = f'{notebook_path} - Cell {i} '
 
