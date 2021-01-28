@@ -66,7 +66,9 @@ def format_file(
                 cells_errored += 1
                 continue
             else:
-                raise e
+                raise RuntimeError(
+                    f'[{notebook_path}] Error while formatting cell {i}: {e}'
+                )
 
         if orig_source != fmted_source:
             fmted_source = re.sub('^#%#jupylint#', '%', fmted_source, flags=re.M)
