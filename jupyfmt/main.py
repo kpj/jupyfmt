@@ -200,7 +200,7 @@ def get_notebooks_in_dir(path, exclude_regex):
     '--exclude',
     type=str,
     metavar='PATTERN',
-    default=r'(.git|.ipynb_checkpoints|build|dist)',
+    default=r'(/.git/|/.ipynb_checkpoints/|/build/|/dist/)',
     help=(
         'Regular expression to match paths which should be exluded when searching directories.'
     ),
