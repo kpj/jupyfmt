@@ -13,6 +13,23 @@ import click
 PathLike = Union[Path, str]
 
 
+SKIPPABLE_MAGIC_CODES = [
+    # non-python languages
+    'bash',
+    'html',
+    'javascript',
+    'js',
+    'latex',
+    'markdown',
+    'perl',
+    'ruby',
+    'sh',
+    'svg',
+    # extra functionality
+    'writefile',
+]
+
+
 def format_file(
     notebook_path: PathLike,
     mode: black.FileMode,
@@ -49,6 +66,10 @@ def format_file(
 
         # format code
         orig_source = cell['source']
+
+        # check whether we should really process cell
+        if any(orig_source.startswith(f'%%{magic}') for magic in SKIPPABLE_MAGIC_CODES):
+            continue
 
         # black expects empty line at end of file
         # for notebook cells, this does not make sense
