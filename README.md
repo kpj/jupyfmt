@@ -51,8 +51,11 @@ Options:
 
   --exclude PATTERN               Regular expression to match paths which
                                   should be exluded when searching
-                                  directories.  [default:
-                                  (.git|.ipynb_checkpoints|build|dist)]
+                                  directories.  [default: (/.git/|/.ipynb_chec
+                                  kpoints/|/build/|/dist/)]
+
+  --accepted-languages PATTERN    Only format Jupyter notebooks in these
+                                  languages.  [default: python]
 
   --help                          Show this message and exit.
 ```

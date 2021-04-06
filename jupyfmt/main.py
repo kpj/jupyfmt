@@ -145,15 +145,24 @@ def format_file(
     return cells_errored, cells_changed, cells_unchanged
 
 
-def get_notebooks_in_dir(path, exclude_regex):
+def get_notebook_language(path: PathLike) -> str:
+    with open(path) as fd:
+        nb = nbf.read(fd, as_version=4)
+    return nb.get('metadata', {}).get('kernelspec', {}).get('language', None)
+
+
+def get_notebooks_in_dir(path, exclude_regex, accepted_languages):
     for child in path.iterdir():
         exclude_match = exclude_regex.search(str(child.resolve().as_posix()))
         if exclude_match and exclude_match.group(0):
             continue
 
         if child.is_dir():
-            yield from get_notebooks_in_dir(child, exclude_regex)
+            yield from get_notebooks_in_dir(child, exclude_regex, accepted_languages)
         elif child.is_file() and child.suffix == '.ipynb':
+            if get_notebook_language(child) not in accepted_languages:
+                continue
+
             yield child
 
 
@@ -206,6 +215,14 @@ def get_notebooks_in_dir(path, exclude_regex):
     ),
     show_default=True,
 )
+@click.option(
+    '--accepted-languages',
+    type=str,
+    metavar='PATTERN',
+    default='python',
+    help=('Only format Jupyter notebooks in these languages.'),
+    show_default=True,
+)
 @click.argument(
     'path_list',
     nargs=-1,
@@ -223,6 +240,7 @@ def main(
     compact_diff: bool,
     assert_consistent_execution: bool,
     exclude: str,
+    accepted_languages: str,
     path_list: List[PathLike],
 ):
     """The uncompromising Jupyter notebook formatter.
@@ -239,7 +257,9 @@ def main(
         if path.is_file():
             files_to_format.add(path)
         elif path.is_dir():
-            files_to_format.update(get_notebooks_in_dir(path, exclude_regex))
+            files_to_format.update(
+                get_notebooks_in_dir(path, exclude_regex, accepted_languages.split(','))
+            )
 
     # format files
     mode = black.FileMode(
