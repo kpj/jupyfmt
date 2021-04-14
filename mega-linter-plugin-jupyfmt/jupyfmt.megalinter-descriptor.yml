@@ -22,5 +22,5 @@ linters:
     examples:
       - "jupyfmt --check --compact-diff Notebook.ipynb"
     install:
-      pip:
-        - jupyfmt
+      dockerfile:
+        - RUN pip install jupyfmt
