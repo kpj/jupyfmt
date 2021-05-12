@@ -11,7 +11,7 @@ repository = "https://github.com/kpj/jupyfmt"
 python = "^3.8.0"
 black = "^21.4b0"
 nbformat = "^5.1.2"
-click = "^7.1.2"
+click = ">=7.1.2,<9.0.0"
 
 [tool.poetry.dev-dependencies]
 bump2version = "^1.0.1"
