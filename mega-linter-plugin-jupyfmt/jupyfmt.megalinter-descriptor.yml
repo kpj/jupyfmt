@@ -21,6 +21,6 @@ linters:
     cli_version_arg_name: "--version"
     examples:
       - "jupyfmt --check --compact-diff Notebook.ipynb"
-    install:
-      dockerfile:
-        - RUN pip install jupyfmt
+install:
+  dockerfile:
+    - RUN pip install jupyfmt
