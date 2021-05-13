@@ -1,6 +1,7 @@
 import re
 import difflib
 from pathlib import Path
+from importlib import metadata
 
 from typing import Union, List
 
@@ -10,6 +11,7 @@ import nbformat as nbf
 import click
 
 
+__version__ = metadata.version('jupyfmt')
 PathLike = Union[Path, str]
 
 
@@ -223,6 +225,7 @@ def get_notebooks_in_dir(path, exclude_regex, accepted_languages):
     help=('Only format Jupyter notebooks in these languages.'),
     show_default=True,
 )
+@click.version_option(__version__)
 @click.argument(
     'path_list',
     nargs=-1,

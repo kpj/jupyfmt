@@ -1,7 +1,1 @@
-# set version dunder variable
-from importlib import metadata
-
-__version__ = metadata.version('jupyfmt')
-
-
-from .main import main
+from .main import main, __version__
