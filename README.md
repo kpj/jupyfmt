@@ -29,9 +29,9 @@ Usage: jupyfmt [OPTIONS] [PATH_LIST]...
 
   The uncompromising Jupyter notebook formatter.
 
-  PATH_LIST specifies notebooks and directories to search for notebooks in.
-  By default, all notebooks will be formatted in-place. Use `--check`,
-  `--diff` (or `--compact-diff`) to print summary reports instead.
+  PATH_LIST specifies notebooks and directories to search for notebooks in. By
+  default, all notebooks will be formatted in-place. Use `--check`, `--diff`
+  (or `--compact-diff`) to print summary reports instead.
 
 Options:
   -l, --line-length INT           How many characters per line to allow.
@@ -39,24 +39,19 @@ Options:
                                   Don't normalize string quotes or prefixes.
   --check                         Don't write files back, just return status
                                   and print summary.
-
   -d, --diff                      Don't write files back, just output a diff
                                   for each file to stdout.
-
   --compact-diff                  Same as --diff but only show lines that
                                   would change plus a few lines of context.
-
   --assert-consistent-execution   Assert that all cells have been executed in
                                   correct order.
-
   --exclude PATTERN               Regular expression to match paths which
                                   should be exluded when searching
                                   directories.  [default: (/.git/|/.ipynb_chec
                                   kpoints/|/build/|/dist/)]
-
   --accepted-languages PATTERN    Only format Jupyter notebooks in these
                                   languages.  [default: python]
-
+  --version                       Show the version and exit.
   --help                          Show this message and exit.
 ```
 
