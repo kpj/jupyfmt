@@ -81,3 +81,15 @@ $ jupyfmt --check --compact-diff Notebook.ipynb
 
 1 file(s) would be changed 😬
 ```
+
+## Mega-Linter Integration
+
+`jupyfmt` can be run as part of [Mega-Linter](https://github.com/nvuillam/mega-linter) by adding the following to `.mega-linter.yml`:
+
+```yaml
+PLUGINS:
+  - https://raw.githubusercontent.com/kpj/jupyfmt/master/mega-linter-plugin-jupyfmt/jupyfmt.megalinter-descriptor.yml
+
+ENABLE_LINTERS:
+  - JUPYTER_JUPYFMT
+```
