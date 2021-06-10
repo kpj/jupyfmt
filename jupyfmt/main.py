@@ -99,14 +99,12 @@ def format_file(
             fmted_source = re.sub('^#%#jupylint#', '%', fmted_source, flags=re.M)
             fmted_source = re.sub('^#!#jupylint#', '!', fmted_source, flags=re.M)
 
-            header = f'{notebook_path} - Cell {i} '
-
             if compact_diff:
                 diff_result = difflib.unified_diff(
                     orig_source.splitlines(keepends=True),
                     fmted_source.splitlines(keepends=True),
-                    fromfile=header,
-                    tofile=header,
+                    fromfile=f'{notebook_path} - Cell {i} (original)',
+                    tofile=f'{notebook_path} - Cell {i} (formatted)',
                 )
             elif diff:
                 diff_result = difflib.ndiff(
