@@ -16,7 +16,7 @@ click = ">=7.1.2,<9.0.0"
 [tool.poetry.dev-dependencies]
 bump2version = "^1.0.1"
 black = ">=21.4,<23.0"
-pytest = "^6.2.1"
+pytest = "^7.0.0"
 
 [tool.poetry.scripts]
 jupyfmt = "jupyfmt:main"
