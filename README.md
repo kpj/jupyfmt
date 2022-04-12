@@ -58,15 +58,15 @@ Options:
 Report formatting suggestions for a given notebook (this is particularly useful for CI workflows):
 ```bash
 $ jupyfmt --check --compact-diff Notebook.ipynb
---- notebook_dir/Notebook.ipynb - Cell 1 (original)
-+++ notebook_dir/Notebook.ipynb - Cell 1 (formatted)
+--- Notebook.ipynb - Cell 1 (original)
++++ Notebook.ipynb - Cell 1 (formatted)
 @@ -1,2 +1,2 @@
 -def foo (*args):
 +def foo(*args):
      return sum(args)
 
---- notebook_dir/Notebook.ipynb - Cell 2 (original)
-+++ notebook_dir/Notebook.ipynb - Cell 2 (formatted)
+--- Notebook.ipynb - Cell 2 (original)
++++ Notebook.ipynb - Cell 2 (formatted)
 @@ -1 +1 @@
 -foo(1, 2,3)
 +foo(1, 2, 3)
