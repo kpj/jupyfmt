@@ -25,6 +25,7 @@ SKIPPABLE_MAGIC_CODES = [
     'markdown',
     'perl',
     'ruby',
+    'R',
     'sh',
     'svg',
     # extra functionality
