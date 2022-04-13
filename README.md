@@ -6,7 +6,11 @@
 The uncompromising Jupyter notebook formatter.
 
 `jupyfmt` allows you to format notebooks in-place from the commandline as well as assert properly formatted Jupyter notebook cells in your CI.
-Inspired by [snakefmt](https://github.com/snakemake/snakefmt/). Uses [black](https://github.com/psf/black/) under the hood.
+Inspired by [snakefmt](https://github.com/snakemake/snakefmt/).
+
+The following formatters are included for each language:
+* Python: [black](https://github.com/psf/black/)
+* R: [styler](https://github.com/r-lib/styler)
 
 
 ## Installation
