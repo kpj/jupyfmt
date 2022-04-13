@@ -21,9 +21,6 @@ pytest = "^7.0.0"
 [tool.poetry.scripts]
 jupyfmt = "jupyfmt:main"
 
-[tool.black]
-skip_string_normalization = true
-
 [build-system]
 requires = ["poetry"]
 build-backend = "poetry.masonry.api"
