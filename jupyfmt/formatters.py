@@ -57,23 +57,32 @@ def format_r(orig_source: str, **kwargs) -> str:
     return re.sub("# %#jupylint#", "#%#jupylint#", proc.stdout.decode(), flags=re.M)
 
 
-def get_formatter(source: str) -> str:
+NONPYTHON_FORMATTERS = {"R": format_r}
+
+
+def get_formatter(source: str, exclude_nonkernel_languages: bool) -> str:
     """Detect language of code cell by parsing cell magic."""
     first_nonempty_line = next(line for line in source.splitlines() if line)
 
-    if any(
-        first_nonempty_line.startswith(f"%%{magic}") for magic in SKIPPABLE_MAGIC_CODES
-    ):
+    # decide whether to skip cell
+    if exclude_nonkernel_languages:
+        skip_codes = SKIPPABLE_MAGIC_CODES + list(NONPYTHON_FORMATTERS.keys())
+    else:
+        skip_codes = SKIPPABLE_MAGIC_CODES
+
+    if any(first_nonempty_line.startswith(f"%%{magic}") for magic in skip_codes):
         return None
 
     # detect language
     marker = first_nonempty_line.split()[0][2:]  # "%%<lang> other"
-    return {"R": format_r}.get(marker, format_python)
+    return NONPYTHON_FORMATTERS.get(marker, format_python)
 
 
-def format_code(orig_source: str, **kwargs) -> Optional[str]:
+def format_code(
+    orig_source: str, exclude_nonkernel_languages: bool, **kwargs
+) -> Optional[str]:
     """Detect language and format code."""
-    formatter = get_formatter(orig_source)
+    formatter = get_formatter(orig_source, exclude_nonkernel_languages)
 
     if formatter is None:
         return None

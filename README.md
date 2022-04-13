@@ -51,6 +51,8 @@ Options:
                                   kpoints/|/build/|/dist/)]
   --accepted-languages PATTERN    Only format Jupyter notebooks in these
                                   languages.  [default: python]
+  --exclude-nonkernel-languages   Only format code cells in language of
+                                  notebook kernel.
   --version                       Show the version and exit.
   --help                          Show this message and exit.
 ```

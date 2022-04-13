@@ -24,6 +24,7 @@ def format_file(
     diff: bool,
     compact_diff: bool,
     assert_consistent_execution: bool,
+    exclude_nonkernel_languages: bool,
 ):
     """Format a given notebook."""
     with open(notebook_path) as fd:
@@ -56,7 +57,9 @@ def format_file(
         orig_source = cell["source"]
 
         try:
-            fmted_source = format_code(orig_source, mode=mode)
+            fmted_source = format_code(
+                orig_source, exclude_nonkernel_languages, mode=mode
+            )
         except FormattingException as e:
             if check:
                 print(f"[{notebook_path}] Error while formatting cell {i}: {e}")
@@ -198,6 +201,12 @@ def get_notebooks_in_dir(path, exclude_regex, accepted_languages):
     help=("Only format Jupyter notebooks in these languages."),
     show_default=True,
 )
+@click.option(
+    "--exclude-nonkernel-languages",
+    is_flag=True,
+    default=False,
+    help=("Only format code cells in language of notebook kernel."),
+)
 @click.version_option(__version__)
 @click.argument(
     "path_list",
@@ -217,6 +226,7 @@ def main(
     assert_consistent_execution: bool,
     exclude: str,
     accepted_languages: str,
+    exclude_nonkernel_languages: bool,
     path_list: List[PathLike],
 ):
     """The uncompromising Jupyter notebook formatter.
@@ -254,6 +264,7 @@ def main(
                 diff,
                 compact_diff,
                 assert_consistent_execution,
+                exclude_nonkernel_languages,
             )
         except Exception as e:
             if check:
