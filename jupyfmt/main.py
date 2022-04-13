@@ -65,7 +65,7 @@ def format_file(
             else:
                 raise RuntimeError(
                     f'[{notebook_path}] Error while formatting cell {i}: {e}'
-                )
+                ) from None
 
         if fmted_source is None:
             # cell was skipped

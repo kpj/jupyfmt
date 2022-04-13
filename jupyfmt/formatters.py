@@ -36,7 +36,7 @@ def format_python(orig_source: str, **kwargs) -> str:
     try:
         fmted_source = black.format_str(orig_source, **kwargs)
     except black.InvalidInput as e:
-        raise FormattingException from e
+        raise FormattingException(e)
 
     return fmted_source
 
