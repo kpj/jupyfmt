@@ -14,6 +14,7 @@ def valid_notebook(tmp_path):
         nbf.v4.new_code_cell("1 + 1"),
         nbf.v4.new_code_cell("%time 1 + 1"),
         nbf.v4.new_code_cell("%%time\n1 + 1"),
+        nbf.v4.new_code_cell(""),
     ]
 
     fname = tmp_path / "notebook.ipynb"

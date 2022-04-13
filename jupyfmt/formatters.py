@@ -62,6 +62,11 @@ NONPYTHON_FORMATTERS = {"R": format_r}
 
 def get_formatter(source: str, exclude_nonkernel_languages: bool) -> str:
     """Detect language of code cell by parsing cell magic."""
+    # empty cells need no formatter
+    if len(source) == 0:
+        return None
+
+    # detect formatter based on cell magic in forst non-empty line
     first_nonempty_line = next(line for line in source.splitlines() if line)
 
     # decide whether to skip cell
@@ -75,6 +80,8 @@ def get_formatter(source: str, exclude_nonkernel_languages: bool) -> str:
 
     # detect language
     marker = first_nonempty_line.split()[0][2:]  # "%%<lang> other"
+
+    # return formatter associated with language
     return NONPYTHON_FORMATTERS.get(marker, format_python)
 
 
