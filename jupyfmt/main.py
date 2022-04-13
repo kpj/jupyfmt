@@ -10,27 +10,11 @@ import nbformat as nbf
 
 import click
 
+from .formatters import FormattingException, format_code
+
 
 __version__ = metadata.version('jupyfmt')
 PathLike = Union[Path, str]
-
-
-SKIPPABLE_MAGIC_CODES = [
-    # non-python languages
-    'bash',
-    'html',
-    'javascript',
-    'js',
-    'latex',
-    'markdown',
-    'perl',
-    'ruby',
-    'R',
-    'sh',
-    'svg',
-    # extra functionality
-    'writefile',
-]
 
 
 def format_file(
@@ -41,6 +25,7 @@ def format_file(
     compact_diff: bool,
     assert_consistent_execution: bool,
 ):
+    """Format a given notebook."""
     with open(notebook_path) as fd:
         nb = nbf.read(fd, as_version=4)
 
@@ -70,23 +55,9 @@ def format_file(
         # format code
         orig_source = cell['source']
 
-        # check whether we should really process cell
-        if any(orig_source.startswith(f'%%{magic}') for magic in SKIPPABLE_MAGIC_CODES):
-            continue
-
-        # black expects empty line at end of non-empty file
-        # for notebook cells, this does not make sense
-        if len(orig_source) > 0:
-            orig_source += '\n'
-
-        # Jupyter cell magic can mess up black
-        # TODO: this is a bad hack
-        orig_source = re.sub('^%', '#%#jupylint#', orig_source, flags=re.M)
-        orig_source = re.sub('^!', '#!#jupylint#', orig_source, flags=re.M)
-
         try:
-            fmted_source = black.format_str(orig_source, mode=mode)
-        except black.InvalidInput as e:
+            fmted_source = format_code(orig_source, mode=mode)
+        except FormattingException as e:
             if check:
                 print(f'[{notebook_path}] Error while formatting cell {i}: {e}')
                 cells_errored += 1
@@ -96,26 +67,29 @@ def format_file(
                     f'[{notebook_path}] Error while formatting cell {i}: {e}'
                 )
 
-        if orig_source != fmted_source:
-            fmted_source = re.sub('^#%#jupylint#', '%', fmted_source, flags=re.M)
-            fmted_source = re.sub('^#!#jupylint#', '!', fmted_source, flags=re.M)
+        if fmted_source is None:
+            # cell was skipped
+            continue
 
+        if orig_source != fmted_source:
             if compact_diff:
                 diff_result = difflib.unified_diff(
-                    orig_source.splitlines(keepends=True),
-                    fmted_source.splitlines(keepends=True),
+                    orig_source.splitlines(keepends=False),
+                    fmted_source.splitlines(keepends=False),
                     fromfile=f'{notebook_path} - Cell {i} (original)',
                     tofile=f'{notebook_path} - Cell {i} (formatted)',
+                    lineterm="",
                 )
             elif diff:
                 diff_result = difflib.ndiff(
-                    orig_source.splitlines(keepends=True),
-                    fmted_source.splitlines(keepends=True),
+                    orig_source.splitlines(keepends=False),
+                    fmted_source.splitlines(keepends=False),
                 )
 
             if compact_diff or diff:
-                diff_str = ''.join(diff_result)
+                diff_str = '\n'.join(diff_result)
                 print(diff_str)
+                print()
 
             if fmted_source.endswith('\n'):
                 # remove dummy newline we added earlier
