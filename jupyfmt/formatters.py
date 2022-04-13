@@ -19,7 +19,6 @@ SKIPPABLE_MAGIC_CODES = [
     'ruby',
     'sh',
     'svg',
-    'R',
     # extra functionality
     'writefile',
 ]
@@ -42,6 +41,22 @@ def format_python(orig_source: str, **kwargs) -> str:
     return fmted_source
 
 
+def format_r(orig_source: str, **kwargs) -> str:
+    """Format R code using styler.
+
+    https://github.com/r-lib/styler
+    """
+    proc = subprocess.run(
+        ["Rscript", "-e", f"styler::style_text({json.dumps(orig_source)})"],
+        capture_output=True,
+    )
+
+    if proc.returncode != 0:
+        raise FormattingException(proc.stderr.decode())
+
+    return re.sub('# %#jupylint#', '#%#jupylint#', proc.stdout.decode(), flags=re.M)
+
+
 def get_formatter(source: str) -> str:
     """Detect language of code cell by parsing cell magic."""
     first_nonempty_line = next(line for line in source.splitlines() if line)
@@ -53,7 +68,7 @@ def get_formatter(source: str) -> str:
 
     # detect language
     marker = first_nonempty_line.split()[0][2:]  # "%%<lang> other"
-    return {}.get(marker, format_python)
+    return {"R": format_r}.get(marker, format_python)
 
 
 def format_code(orig_source: str, **kwargs) -> Optional[str]:
