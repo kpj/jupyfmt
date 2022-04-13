@@ -72,6 +72,7 @@ def format_file(
 
         if fmted_source is None:
             # cell was skipped
+            cells_unchanged += 1
             continue
 
         if orig_source != fmted_source:

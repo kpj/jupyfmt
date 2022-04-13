@@ -43,7 +43,7 @@ def test_valid_notebooks(valid_notebook):
 
     result = runner.invoke(jupyfmt.main, ["--check", str(valid_notebook)])
     assert result.exit_code == 0
-    assert "3 cell(s) would be left unchanged" in result.output
+    assert "4 cell(s) would be left unchanged" in result.output
     assert "1 file(s) would be left unchanged" in result.output
 
 
